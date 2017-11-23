@@ -9,7 +9,7 @@
 # check that a script name argument was provided
 if [[ $# -ne 1 ]]; then
     echo "Missing script argument."
-    echo "Usage: create_script.sh <script>"
+    echo "Usage: create_script <script>"
     exit 1
 fi
 
