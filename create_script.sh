@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# this script takes a script name, creates it in ~/Dropbox/bin,
+# this script takes a script name, creates it in ~/bin,
 # makes it executable, writes its hashbang title and edits it.
 
 # Adir Tzuberi, Shell Scripting with Bash, Pluralsight, 2017
@@ -21,7 +21,7 @@ if type "$scriptname"; then
 fi
 
 # check that the bin dir exists
-bindir="$HOME/Dropbox/bin"
+bindir="$HOME/bin"
 scriptpath="$bindir/$scriptname"
 if [[ ! -d $bindir ]]; then
     echo "Creating $bindir"

@@ -1,3 +1,3 @@
-This is Adir's general purpose script directory.
+This is Adir's general purpose script repository.
 
-Add this to your PATH and use it from any device.
+Created mainly to learn Bash.
