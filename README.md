@@ -1,3 +1,3 @@
-This is Adir's general purpose script repository.
+My general purpose script repository.
 
-Created mainly to learn Bash.
+Created 20% for convenience, 80% for learning Bash.
