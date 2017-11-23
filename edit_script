@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# edits files with default text editor
+# searches directory tree for files whose name contains a user-provided
+# search term and prompts the user to choose which file to edit
+
+# improvement idea: optional argument for search path
+
+function main()
+{
+    if [[ $# -ne 1 ]]; then
+        echo "Missing search term."
+        exit 1
+    fi
+    searchterm="$1"
+    if ! set_text_editor; then
+        echo "No text editor is defined: set EDITOR or install vim."
+        exit 1
+    fi 
+    edit_candidates=$(search_for_candidates)
+    if [[ ! $edit_candidates ]]; then
+        echo "No files match '$searchterm'."
+        exit 1
+    fi
+    num_of_candidates=$(count_candidates)
+    if [[ $num_of_candidates -gt 1 ]]; then
+        prompt_user_to_choose_candidate
+        file_to_edit=$(pick_chosen_file)
+    else
+        # just one candidate...
+        file_to_edit="$edit_candidates"
+    fi
+    edit_file
+    exit 0
+}
+
+function search_for_candidates()
+{
+    echo "$(find . -type f ! -path "*.git*" ! -name "*~" ! -name "*.pyc" -iname "*$searchterm*")"
+    return 0
+}
+
+function set_text_editor()
+{
+    if [[ ! $EDITOR ]]; then
+        if type vim; then
+            EDITOR="vim"
+        else
+            return 1
+        fi
+    fi
+    return 0
+}
+
+function count_candidates()
+{
+    line_count_output=$(wc -l <<< "$edit_candidates")
+    num_of_candidates=$(grep -Eo [[:digit:]]+ <<< "$line_count_output")
+    echo "$num_of_candidates"
+    return 0
+}
+
+function prompt_user_to_choose_candidate()
+{
+    nl -s ") " <<< "$edit_candidates"
+    echo
+    printf "Choose a file to edit: "
+    read user_choice
+    while [[ $user_choice -lt 1 || $user_choice -gt $num_of_candidates ]]; do
+        echo "Invalid choice."
+        printf "Choose a file to edit: "
+        read user_choice
+    done
+    return 0
+}
+
+function pick_chosen_file()
+{
+    echo $(sed --quiet "$user_choice"p <<< "$edit_candidates")
+    return 0
+}
+
+function edit_file()
+{
+    $EDITOR "$file_to_edit"
+    return 0
+}
+
+main "$@"
+

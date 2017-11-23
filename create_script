@@ -2,9 +2,7 @@
 
 # this script takes a script name, creates it in ~/bin,
 # makes it executable, writes its hashbang title and edits it.
-
-# Adir Tzuberi, Shell Scripting with Bash, Pluralsight, 2017
-
+# TODO: refactor to functions
 
 # check that a script name argument was provided
 if [[ $# -ne 1 ]]; then
