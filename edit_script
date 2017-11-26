@@ -62,21 +62,25 @@ function count_candidates()
 
 function prompt_user_to_choose_candidate()
 {
+    nl -s ") " -v 0 <<< "Exit"
     nl -s ") " <<< "$edit_candidates"
     echo
     printf "Choose a file to edit: "
     read user_choice
-    while [[ $user_choice -lt 1 || $user_choice -gt $num_of_candidates ]]; do
+    while [[ $user_choice -lt 0 || $user_choice -gt $num_of_candidates ]]; do
         echo "Invalid choice."
         printf "Choose a file to edit: "
         read user_choice
     done
+    if [[ $user_choice -eq 0 ]]; then
+        exit 0
+    fi
     return 0
 }
 
 function pick_chosen_file()
 {
-    echo $(sed --quiet "$user_choice"p <<< "$edit_candidates")
+    echo $(sed -n "$user_choice"p <<< "$edit_candidates")
     return 0
 }
 
