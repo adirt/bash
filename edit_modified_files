@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# edits modified files in a git repository
+
+function main
+{
+    if ! is_vim_installed; then
+        echo "Vim is not installed."
+        exit 1
+    fi
+    if ! is_cwd_a_git_repo; then
+        echo "Current directory is not a git repository."
+        exit 1
+    fi
+    files_to_edit=$(get_modified_files)
+    if [[ $files_to_edit ]]; then
+        edit_files $files_to_edit
+    else
+        echo "There are no modified files to edit."
+    fi
+    exit 0
+}
+
+function is_vim_installed
+{
+    if type vim; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function is_cwd_a_git_repo
+{
+    if [[ -d $PWD/.git ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function get_modified_files
+{
+    git_status_output=$(git status)
+}
+
+function edit_files
+{
+    vim -p $1
+}
+
+main "$@"
