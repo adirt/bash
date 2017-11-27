@@ -62,16 +62,18 @@ function count_candidates()
 
 function prompt_user_to_choose_candidate()
 {
-    nl -s ") " -v 0 <<< "Exit"
     nl -s ") " <<< "$edit_candidates"
     echo
     printf "Choose a file to edit: "
     read user_choice
-    while [[ $user_choice -lt 0 || $user_choice -gt $num_of_candidates ]]; do
+    # If a non-integer value was typed, Bash will convert it to 0 without warning.
+    # To treat the value 0 as an invalid input, I need to compare it to the string "0".
+    while [[ $user_choice = "0" || $user_choice -lt 0 || $user_choice -gt $num_of_candidates ]]; do
         echo "Invalid choice."
         printf "Choose a file to edit: "
         read user_choice
     done
+    # Non-numeric choices exit the program.
     if [[ $user_choice -eq 0 ]]; then
         exit 0
     fi
