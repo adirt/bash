@@ -40,6 +40,15 @@ fi
 cat > "$scriptpath" << EOL
 #!/bin/bash
 
+# insert script description here.
+
+function main
+{
+    # write me
+    exit 0
+}
+
+main "\$@"
 
 EOL
 
