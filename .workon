@@ -4,28 +4,27 @@
 # since the purpose of the function is to source a script,
 # this file should be sourced by bashrc and not invoked directly.
 
+export VIRTUAL_ENVS_DIR="$HOME/Environments"
+
 function workon
 {
     if [[ $# -ne 1 ]]; then
-        echo "Missing environment argument. Type 'workon list' for installed environments."
+        echo "Usage: workon <env-name>"
+        echo
+        echo "Type 'workon list' for installed environments."
         return 1
     fi
-    env_name="$1"
-    if [[ $env_name = "list" ]]; then
-        ls --format='single-column' "$HOME/Environments"
+    if [[ $1 = "list" ]]; then
+        ls --format='single-column' "$VIRTUAL_ENVS_DIR"
         return 0
     fi
-    env_path="$HOME/Environments/$env_name"
-    if [[ ! -d $env_path ]]; then
+    env_name="$1"
+    activate_cmd="$VIRTUAL_ENVS_DIR/$env_name/bin/activate"
+    if [[ ! -e $activate_cmd ]]; then
         echo "Environment '$env_name' doesn't exist."
         return 1
     fi
-    activate_path="$env_path/bin/activate"
-    if [[ ! -e $activate_path ]]; then
-        echo "Can't find activate script in $activate_path."
-        return 1
-    fi
-    source $activate_path
+    source "$activate_cmd"
     echo "Switched to '$env_name' Python environment. Type 'deactivate' to return."
     return 0
 }
