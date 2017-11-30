@@ -2,42 +2,63 @@
 
 # this script takes a script name, creates it in ~/bin,
 # makes it executable, writes its hashbang title and edits it.
-# TODO: refactor to functions
 
-# check that a script name argument was provided
-if [[ $# -ne 1 ]]; then
-    echo "Missing script argument."
-    echo "Usage: create_script <script>"
-    exit 1
-fi
-
-# check that the script name isn't a known shell command
-scriptname="$1"
-if type "$scriptname"; then
-    echo "$scriptname is an existing command, pick another."
-    exit 1
-fi
-
-# check that the bin dir exists
-bindir="$HOME/bin"
-scriptpath="$bindir/$scriptname"
-if [[ ! -d $bindir ]]; then
-    echo "Creating $bindir"
-    if ! mkdir "$bindir"; then
-        echo "Failed to create $bindir"
+function main
+{
+    if [[ $# -ne 1 ]]; then
+        echo "Missing script argument."
+        echo "Usage: create_script <script>"
         exit 1
     fi
-
-# check if the script already exists and prompt the user to overwrite it
-elif [[ -e $scriptpath ]]; then
-    read -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
-    if [[ ! $overwrite = "Y" && ! $overwrite = "y" ]]; then
-        exit 0
+    scriptname="$1"
+    if script_already_exists; then
+        echo "$scriptname is an existing command, pick another."
+        exit 1
     fi
-fi
+    bindir="$HOME/bin"
+    verify_bindir
+    scriptpath="$bindir/$scriptname"
+    verify_scriptpath
+    write_script_template
+    make_script_executable
+    open_script_in_editor
+    echo "Created new script at $scriptpath"
+    exit 0
+}
 
-# create the file and set its #! line
-cat > "$scriptpath" << EOL
+function script_already_exists
+{
+    if type "$scriptname"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+function verify_bindir
+{
+    if [[ ! -d $bindir ]]; then
+        echo "Creating $bindir"
+        if ! mkdir "$bindir"; then
+            echo "Failed to create $bindir"
+            exit 1
+        fi
+    fi
+}
+
+function verify_scriptpath
+{
+    if [[ -e $scriptpath ]]; then
+        read -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
+        if [[ ! $overwrite = "Y" && ! $overwrite = "y" ]]; then
+            exit 0
+        fi
+    fi
+}
+
+function write_script_template
+{
+    cat > "$scriptpath" << EOL
 #!/bin/bash
 
 # insert script description here.
@@ -51,14 +72,19 @@ function main
 main "\$@"
 
 EOL
+}
 
-# make the file executable
-chmod u+x "$scriptpath"
+function make_script_executable
+{
+    chmod u+x "$scriptpath"
+}
 
-# edit the script with your favorite editor, probably vim
-if [[ $EDITOR ]]; then
-    $EDITOR "$scriptpath"
-fi
+function open_script_in_editor
+{
+    if [[ $EDITOR ]]; then
+        $EDITOR "$scriptpath"
+    fi
+}
 
-echo "Created new script at $scriptpath"
+main "$@"
 
