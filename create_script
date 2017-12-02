@@ -49,7 +49,7 @@ function verify_bindir
 function verify_scriptpath
 {
     if [[ -e $scriptpath ]]; then
-        read -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
+        read -r -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
         if [[ ! $overwrite = "Y" && ! $overwrite = "y" ]]; then
             exit 0
         fi
