@@ -1,29 +1,30 @@
 #!/bin/bash
 
 # edits modified files in a git repository
+# great chance to practice awk
 
 function main
 {
     if ! is_vim_installed; then
-        echo "Vim is not installed."
+        echo "Vim is not installed." 1>&2
         exit 1
     fi
     if ! is_cwd_a_git_repo; then
-        echo "Current directory is not a git repository."
+        echo "Current directory is not a git repository." 1>&2
         exit 1
     fi
     files_to_edit=$(get_modified_files)
     if [[ $files_to_edit ]]; then
         edit_files $files_to_edit
     else
-        echo "There are no modified files to edit."
+        echo "There are no modified files to edit." 1>&2
     fi
     exit 0
 }
 
 function is_vim_installed
 {
-    if type vim; then
+    if type vim &> /dev/null; then
         return 0
     else
         return 1
