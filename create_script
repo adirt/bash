@@ -3,6 +3,8 @@
 # this script takes a script name, creates it in ~/bin,
 # makes it executable, writes its hashbang title and edits it.
 
+# FIXME: chmod fails if scriptpath contains a folder.
+#        Either make sure scriptpath has no slashes or create the dirs in scriptpath.
 function main
 {
     if [[ $# -ne 1 ]]; then
@@ -50,7 +52,7 @@ function verify_scriptpath
 {
     if [[ -e $scriptpath ]]; then
         read -r -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
-        if [[ ! $overwrite = "Y" && ! $overwrite = "y" ]]; then
+        if [[ ! $overwrite = [Yy] ]]; then
             exit 0
         fi
     fi
