@@ -8,13 +8,13 @@
 function main
 {
     if [[ $# -ne 1 ]]; then
-        echo "Missing script argument."
-        echo "Usage: create_script <script>"
+        echo "Missing script argument." 1>&2
+        echo "Usage: create_script <script>" 1>&2
         exit 1
     fi
     scriptname="$1"
     if script_already_exists; then
-        echo "$scriptname is an existing command, pick another."
+        echo "$scriptname is an existing command, pick another." 1>&2
         exit 1
     fi
     bindir="$HOME/bin"
@@ -30,7 +30,7 @@ function main
 
 function script_already_exists
 {
-    if type "$scriptname"; then
+    if type "$scriptname" &> /dev/null; then
         return 0
     else
         return 1
@@ -42,7 +42,7 @@ function verify_bindir
     if [[ ! -d $bindir ]]; then
         echo "Creating $bindir"
         if ! mkdir "$bindir"; then
-            echo "Failed to create $bindir"
+            echo "Failed to create $bindir" 1>&2
             exit 1
         fi
     fi
