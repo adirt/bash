@@ -3,7 +3,7 @@
 # edits modified files in a git repository
 # great chance to practice awk
 
-function main
+main()
 {
     if ! is_vim_installed; then
         echo "Vim is not installed." 1>&2
@@ -22,7 +22,7 @@ function main
     exit 0
 }
 
-function is_vim_installed
+is_vim_installed()
 {
     if type vim &> /dev/null; then
         return 0
@@ -31,7 +31,7 @@ function is_vim_installed
     fi
 }
 
-function is_cwd_a_git_repo
+is_cwd_a_git_repo()
 {
     if [[ -d $PWD/.git ]]; then
         return 0
@@ -40,14 +40,15 @@ function is_cwd_a_git_repo
     fi
 }
 
-function get_modified_files
+get_modified_files()
 {
     git_status_output=$(git status)
 }
 
-function edit_files
+edit_files()
 {
     vim -p $1
 }
 
 main "$@"
+

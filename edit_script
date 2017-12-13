@@ -6,7 +6,7 @@
 
 # improvement idea: optional argument for search path
 
-function main
+main()
 {
     if [[ $# -ne 1 ]]; then
         echo "Missing search term." 1>&2
@@ -34,13 +34,13 @@ function main
     exit 0
 }
 
-function search_for_candidates
+search_for_candidates()
 {
     echo "$(find . -type f ! -path "*.git*" ! -name "*~" ! -name "*.pyc" -iname "*$searchterm*")"
     return 0
 }
 
-function set_text_editor
+set_text_editor()
 {
     if [[ ! $EDITOR ]]; then
         if type vim &> /dev/null; then
@@ -52,7 +52,7 @@ function set_text_editor
     return 0
 }
 
-function count_candidates
+count_candidates()
 {
     line_count_output=$(wc -l <<< "$edit_candidates")
     num_of_candidates=$(grep -Eo [[:digit:]]+ <<< "$line_count_output")
@@ -60,7 +60,7 @@ function count_candidates
     return 0
 }
 
-function prompt_user_to_choose_candidate
+prompt_user_to_choose_candidate()
 {
     nl -s ") " <<< "$edit_candidates"
     echo
@@ -80,13 +80,13 @@ function prompt_user_to_choose_candidate
     return 0
 }
 
-function pick_chosen_file
+pick_chosen_file()
 {
     echo $(sed -n "$user_choice"p <<< "$edit_candidates")
     return 0
 }
 
-function edit_file
+edit_file()
 {
     $EDITOR "$file_to_edit"
     return 0

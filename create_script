@@ -5,7 +5,8 @@
 
 # FIXME: chmod fails if scriptpath contains a folder.
 #        Either make sure scriptpath has no slashes or create the dirs in scriptpath.
-function main
+
+main()
 {
     if [[ $# -ne 1 ]]; then
         echo "Missing script argument." 1>&2
@@ -28,7 +29,7 @@ function main
     exit 0
 }
 
-function script_already_exists
+script_already_exists()
 {
     if type "$scriptname" &> /dev/null; then
         return 0
@@ -37,7 +38,7 @@ function script_already_exists
     fi
 }
 
-function verify_bindir
+verify_bindir()
 {
     if [[ ! -d $bindir ]]; then
         echo "Creating $bindir"
@@ -48,7 +49,7 @@ function verify_bindir
     fi
 }
 
-function verify_scriptpath
+verify_scriptpath()
 {
     if [[ -e $scriptpath ]]; then
         read -r -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
@@ -58,14 +59,14 @@ function verify_scriptpath
     fi
 }
 
-function write_script_template
+write_script_template()
 {
     cat > "$scriptpath" << EOL
 #!/bin/bash
 
 # insert script description here.
 
-function main
+main()
 {
     # write me
     exit 0
@@ -76,12 +77,12 @@ main "\$@"
 EOL
 }
 
-function make_script_executable
+make_script_executable()
 {
     chmod u+x "$scriptpath"
 }
 
-function open_script_in_editor
+open_script_in_editor()
 {
     if [[ $EDITOR ]]; then
         $EDITOR "$scriptpath"
