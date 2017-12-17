@@ -9,17 +9,17 @@
 main()
 {
     if [[ $# -ne 1 ]]; then
-        echo "Missing search term." 1>&2
+        echo "Missing search term." >&2
         exit 1
     fi
     searchterm="$1"
     if ! set_text_editor; then
-        echo "No text editor is defined: set EDITOR or install vim." 1>&2
+        echo "No text editor is defined: set EDITOR or install vim." >&2
         exit 1
     fi 
     edit_candidates=$(search_for_candidates)
     if [[ ! $edit_candidates ]]; then
-        echo "No files match '$searchterm'." 1>&2
+        echo "No files match '$searchterm'." >&2
         exit 1
     fi
     num_of_candidates=$(count_candidates)
