@@ -12,8 +12,7 @@ main()
         exit 1
     fi
     scriptname="$1"
-    valid_filename_pattern='^[a-zA-Z]\w*$'
-    if [[ ! $scriptname =~ $valid_filename_pattern ]]; then
+    if ! is_filename_valid; then
         echo "Invalid file name." >&2
         exit 1
     fi
@@ -30,6 +29,16 @@ main()
     open_script_in_editor
     echo "Created new script at $scriptpath"
     exit 0
+}
+
+is_filename_valid()
+{
+    valid_filename_pattern='^[a-zA-Z]\w*$'
+    if [[ $scriptname =~ $valid_filename_pattern ]]; then
+        true
+    else
+        false
+    fi
 }
 
 script_already_exists()
