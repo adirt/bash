@@ -3,17 +3,20 @@
 # this script takes a script name, creates it in ~/bin,
 # makes it executable, writes its hashbang title and edits it.
 
-# FIXME: chmod fails if scriptpath contains a folder.
-#        Either make sure scriptpath has no slashes or create the dirs in scriptpath.
+# TODO:  See how I can expand the RE pattern to include a dot, a space and a hyphen.
 
 main()
 {
     if [[ $# -ne 1 ]]; then
-        echo "Missing script argument." >&2
         echo "Usage: create_script <script>" >&2
         exit 1
     fi
     scriptname="$1"
+    valid_filename_pattern='^[a-zA-Z]\w*$'
+    if [[ ! $scriptname =~ $valid_filename_pattern ]]; then
+        echo "Invalid file name." >&2
+        exit 1
+    fi
     if script_already_exists; then
         echo "$scriptname is an existing command, pick another." >&2
         exit 1
@@ -31,10 +34,10 @@ main()
 
 script_already_exists()
 {
-    if type "$scriptname" &> /dev/null; then
-        return 0
+    if type "$scriptname" > /dev/null 2>&1; then
+        true
     else
-        return 1
+        false
     fi
 }
 
