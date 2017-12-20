@@ -2,6 +2,7 @@
 
 # edits modified files in a git repository
 # great chance to practice awk
+# TODO: Improve awk quality
 
 main()
 {
@@ -43,12 +44,14 @@ is_cwd_a_git_repo()
 get_modified_files()
 {
     git_status_output=$(git status)
+    awk '/new|modified/{if ($1 == "new") print $3; else if ($1 == "modified:") print $2}' <<< "$git_status_output"
 }
 
 edit_files()
 {
-    vim -p $1
+    vim -p "$@"
 }
 
-main "$@"
+main
 
+# just for testes
