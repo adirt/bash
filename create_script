@@ -33,7 +33,7 @@ main()
 
 is_filename_valid()
 {
-    valid_filename_pattern='^[a-zA-Z]\w*$'
+    valid_filename_pattern='^[:alpha:]\w*$'
     if [[ $scriptname =~ $valid_filename_pattern ]]; then
         true
     else
@@ -43,7 +43,7 @@ is_filename_valid()
 
 script_already_exists()
 {
-    if type "$scriptname" > /dev/null 2>&1; then
+    if type -- "$scriptname" > /dev/null 2>&1; then
         true
     else
         false
@@ -65,7 +65,7 @@ verify_scriptpath()
 {
     if [[ -e $scriptpath ]]; then
         read -r -p "Script already exists. Are you sure you want to overwrite it? [y/N] " overwrite
-        if [[ ! $overwrite = [Yy] ]]; then
+        if [[ $overwrite != [Yy] ]]; then
             exit 0
         fi
     fi
@@ -73,7 +73,7 @@ verify_scriptpath()
 
 write_script_template()
 {
-    cat > "$scriptpath" << EOL
+    cat > "$scriptpath" << END
 #!/bin/bash
 
 # insert script description here.
@@ -86,12 +86,12 @@ main()
 
 main "\$@"
 
-EOL
+END
 }
 
 make_script_executable()
 {
-    chmod u+x "$scriptpath"
+    chmod u+x -- "$scriptpath"
 }
 
 open_script_in_editor()

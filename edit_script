@@ -43,7 +43,7 @@ search_for_candidates()
 set_text_editor()
 {
     if [[ ! $EDITOR ]]; then
-        if type vim &> /dev/null; then
+        if type vim > /dev/null 2>&1; then
             EDITOR="vim"
         else
             return 1
