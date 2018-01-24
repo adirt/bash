@@ -5,7 +5,7 @@
 
 main()
 {
-    git_location="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    git_location="$HOME/git"
     cd "$git_location"
     ls_output=$(ls)
     for dir in $ls_output; do
