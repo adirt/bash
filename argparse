@@ -1,0 +1,77 @@
+#!/bin/bash
+
+# An example arg parse for reuse.
+
+parse_args()
+{
+    if [[ $# -eq 1 && $1 = "--help" ]]; then
+        print_usage
+        exit 0
+    fi
+    create=true
+    upload=true
+    while getopts ":cuh" option; do
+        case $option in
+            c)
+                upload=false
+                ;;
+            u)
+                create=false
+                ;;
+            h)
+                print_usage
+                exit 0
+                ;;
+            :)
+                usage_error "Option -$OPTARG is missing an argument."
+                ;;
+            \?)
+                usage_error "Unknown option: -$OPTARG"
+                ;;
+        esac
+    done
+    if ! $create && ! $upload; then
+        create=true
+        upload=true
+    fi
+    shift $(( OPTIND - 1 ))
+    if [[ $# -eq 0 ]]; then
+        usage_error "Missing the version argument."
+    elif [[ $# -gt 1 ]]; then
+        usage_error "Too many arguments."
+    else
+        version="$1"
+    fi
+    if [[ $USER != "nightly" ]]; then
+        usage_error "Script must run under nightly user."
+    fi
+}
+
+print_usage()
+{
+    cat << EOF
+Usage: argparse [options] <version>
+
+Options:
+  -c           Create something
+  -u           Upload something
+  -h|--help    Show this help message
+
+This script will create and upload something.
+It accepts a single version argument.
+EOF
+}
+
+usage_error()
+{
+    print_usage
+    echo
+    error "$1"
+} >&2
+
+error()
+{
+    echo "$1"
+    exit 1
+} >&2
+
