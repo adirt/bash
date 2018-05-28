@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# log() takes 3 arguments:
+# log_name is the name of the log file stored in /data/logs, sans .log extension
+# log_level can be one of 'debug', 'info' or 'error', case insensitive
+# log_message is any string
+# each call to log() will result in a new line in the log file, in the following format:
+# [DATE | LOG_LEVEL] LOG_MESSAGE
+#
+# Example usage:
+# > source logger.sh
+# > log my_log debug 'Hello World!'
+# > cat /var/log/my_log.log
+# [2018/03/22 16:58:16 | DEBUG] Hello World!
+
+log()
+{
+    if (( $# != 3 )); then
+        return 1
+    fi
+    local valid_log_name_pattern='^[[:alnum:]_-]+$'
+    local log_name="$1"
+    if [[ ! $log_name =~ $valid_log_name_pattern ]]; then
+        return 2
+    fi
+    local log_file="/var/log/$log_name.log"
+    local log_level="${2^^}"
+    case "$log_level" in
+        DEBUG|INFO|ERROR)
+            # good
+        ;;
+        *)
+            return 3
+        ;;
+    esac
+    local log_message="$3"
+    local asctime="$(date "+%Y/%m/%d %H:%M:%S")"
+    if ! printf "[%s | %-5s] %s\n" "$asctime" "$log_level" "$log_message" >> "$log_file"; then
+        return 4
+    fi
+    return 0
+}
+
+if [[ $0 == $BASH_SOURCE ]]; then
+    log "$@"
+    exit $?
+fi
