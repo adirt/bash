@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # log() takes 3 arguments:
-# log_name is the name of the log file stored in /data/logs, sans .log extension
+# log_name is the name of the log file stored in /var/log, sans .log extension
 # log_level can be one of 'debug', 'info' or 'error', case insensitive
 # log_message is any string
 # each call to log() will result in a new line in the log file, in the following format:
