@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Run SopCast 4.2.0 using Wine given a SopCast channel number
+
+main()
+{
+    if (( $# == 0 )); then
+        usage_error "Missing channel argument."
+    elif (( $# > 1 )); then
+        usage_error "Too many arguments."
+    fi
+    valid_channel_pattern='^[1-9][[:digit:]]{5}$'
+    if [[ ! $1 =~ $valid_channel_pattern ]]; then
+        usage_error "Invalid argument: A SopCast channel is a 6-digit number."
+    fi
+    program="$HOME/.wine/drive_c/Program Files (x86)/SopCast/SopCast.exe"
+    broker="sop://broker.sopcast.com:3912"
+    channel="$1"
+    wine "$program" "$broker/$channel" & > /dev/null 2>&1
+    exit 0
+}
+
+print_usage()
+{
+    echo "Usage: sopcast <channel>"
+}
+
+usage_error()
+{
+    echo
+    print_usage
+    echo
+    error "$1"
+} >&2
+
+error()
+{
+    echo "$1"
+    exit 1
+} >&2
+
+main "$@"
+
