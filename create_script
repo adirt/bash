@@ -33,7 +33,7 @@ main()
 
 is_filename_valid()
 {
-    valid_filename_pattern='^[:alpha:]\w*$'
+    valid_filename_pattern='^[[:alpha:]]\w*$'
     if [[ $scriptname =~ $valid_filename_pattern ]]; then
         true
     else
