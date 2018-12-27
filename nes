@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# Friendly user interface for running game roms emulated by Mednafen
+# Adir Tzuberi, December 27, 2018
+
+main()
+{
+    title
+    cd "$HOME/Games/Mednafen"
+    print_available_options
+    prompt_user_selection "console"
+    cd "$selected_option"
+    print_available_options
+    prompt_user_selection "game"
+    mednafen "$selected_option" > /dev/null 2>&1
+    exit $?
+}
+
+title()
+{
+    echo
+    echo "----------------"
+    echo "Old School Games"
+    echo "----------------"
+    echo
+}
+
+print_available_options()
+{
+    available_options=()
+    local index=1
+    for option in *; do
+        echo "$index) ${option% (?).zip}"
+        available_options[index]="$option"
+        (( ++index ))
+    done
+    echo
+    echo "$index) Exit"
+}
+
+prompt_user_selection()
+{
+    local selection_type="$1"
+    local selection_made=false
+    while ! $selection_made; do
+        echo
+        read -r -p "Select a $selection_type: " user_selection
+        if (( user_selection > 0 && user_selection <= ${#available_options[@]} )) 2> /dev/null; then
+            selected_option="${available_options[user_selection]}"
+            selection_made=true
+        elif (( user_selection == ${#available_options[@]} + 1 )) 2> /dev/null; then
+            exit 0
+        else
+            echo "Invalid input, try again."
+        fi
+    done
+    echo
+}
+
+main "$@"
+
