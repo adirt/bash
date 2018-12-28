@@ -12,7 +12,7 @@ main()
     cd "$selected_option"
     print_available_options
     prompt_user_selection "game"
-    mednafen "$selected_option" > /dev/null 2>&1
+    play_game "$selected_option"
     exit $?
 }
 
@@ -30,7 +30,7 @@ print_available_options()
     available_options=()
     local index=1
     for option in *; do
-        echo "$index) ${option% (?).zip}"
+        echo "$index) ${option% (?)*.zip}"
         available_options[index]="$option"
         (( ++index ))
     done
@@ -42,19 +42,27 @@ prompt_user_selection()
 {
     local selection_type="$1"
     local selection_made=false
+    local number_of_options=${#available_options[@]}
+    local exit_option=$(( number_of_options + 1 ))
     while ! $selection_made; do
         echo
         read -r -p "Select a $selection_type: " user_selection
-        if (( user_selection > 0 && user_selection <= ${#available_options[@]} )) 2> /dev/null; then
+        if (( user_selection > 0 && user_selection <= number_of_options )) 2> /dev/null; then
             selected_option="${available_options[user_selection]}"
             selection_made=true
-        elif (( user_selection == ${#available_options[@]} + 1 )) 2> /dev/null; then
+        elif (( user_selection == exit_option )) 2> /dev/null; then
             exit 0
         else
             echo "Invalid input, try again."
         fi
     done
     echo
+}
+
+play_game()
+{
+    selected_game="$1"
+    mednafen "$selected_game" > /dev/null 2>&1
 }
 
 main "$@"
