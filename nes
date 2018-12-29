@@ -27,26 +27,27 @@ title()
 
 print_available_options()
 {
-    available_options=()
-    local index=1
-    for option in *; do
-        echo "$index) ${option% (?)*.zip}"
-        available_options[index]="$option"
-        (( ++index ))
+    available_options=( "" * )
+    unset available_options[0]
+    local number_of_options=${#available_options[@]}
+    for (( option_number=1; option_number <= number_of_options; ++option_number )); do
+        option_display_name="${available_options[option_number]% (?)*.zip}"
+        echo "$option_number) $option_display_name"
     done
     echo
-    echo "$index) Exit"
+    echo "$option_number) Exit"
 }
 
 prompt_user_selection()
 {
-    local selection_type="$1"
-    local selection_made=false
+    local option_type="$1"
+    local prompt_message="Select a $option_type"
     local number_of_options=${#available_options[@]}
     local exit_option=$(( number_of_options + 1 ))
+    local selection_made=false
     while ! $selection_made; do
         echo
-        read -r -p "Select a $selection_type: " user_selection
+        read -r -p "$prompt_message: " user_selection
         if (( user_selection > 0 && user_selection <= number_of_options )) 2> /dev/null; then
             selected_option="${available_options[user_selection]}"
             selection_made=true
