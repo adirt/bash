@@ -31,7 +31,7 @@ print_available_options()
     unset available_options[0]
     local number_of_options=${#available_options[@]}
     for (( option_number=1; option_number <= number_of_options; ++option_number )); do
-        option_display_name="${available_options[option_number]% (?)*.zip}"
+        option_display_name="${available_options[option_number]% (*)*.zip}"
         echo "$option_number) $option_display_name"
     done
     echo
