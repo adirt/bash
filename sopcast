@@ -9,13 +9,17 @@ main()
     elif (( $# > 1 )); then
         usage_error "Too many arguments."
     fi
+    if [[ $1 == "sop://"* ]]; then
+        channel="${1##*/}"
+    else
+        channel="$1"
+    fi
     valid_channel_pattern='^[1-9][[:digit:]]{5}$'
-    if [[ ! $1 =~ $valid_channel_pattern ]]; then
+    if [[ ! $channel =~ $valid_channel_pattern ]]; then
         usage_error "Invalid argument: A SopCast channel is a 6-digit number."
     fi
     program="$HOME/.wine/drive_c/Program Files (x86)/SopCast/SopCast.exe"
     broker="sop://broker.sopcast.com:3912"
-    channel="$1"
     wine "$program" "$broker/$channel" & > /dev/null 2>&1
     exit 0
 }
